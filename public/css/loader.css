@@ -1,0 +1,36 @@
+#loader-1:before, #loader-1:after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: calc(50% - 25px);
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    border: 7px solid transparent;
+    border-top-color: #e02d71;
+}
+
+#loader-1:before{
+    z-index: 10;
+    animation: spin 1s infinite;
+}
+
+#loader-1:after{
+    border: 7px solid #ccc;
+}
+
+@keyframes spin{
+    0%{
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    100%{
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
