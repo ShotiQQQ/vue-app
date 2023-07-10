@@ -7,7 +7,7 @@
 
       <Loader v-if="$store.state.isLoadingProductsData" />
 
-      <Catalog :products="products" />
+      <Catalog v-else :products="products" />
 
       <Pagination v-model="page" :count="countProducts" :per-page="productsPerPage" />
 
@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       page: 1,
-      productsPerPage: 4,
+      productsPerPage: 3,
     }
   },
   computed: {

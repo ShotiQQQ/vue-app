@@ -17,8 +17,8 @@
       <fieldset class="form__block">
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select">
-          <select class="form__select" type="text" name="category">
-            <option value="value1">Все категории</option>
+          <select class="form__select" type="text" name="category" v-model="categoryId">
+            <option value="">Все категории</option>
             <option :value="category.id" v-for="category in categories" :key="category.id">{{category.title}}</option>
           </select>
         </label>
@@ -32,7 +32,7 @@
 
           <li class="check-list__item" v-for="material in materials" v-else :key="material.id">
             <label class="check-list__label">
-              <input class="check-list__check sr-only" type="checkbox" name="material" value="лен">
+              <input class="check-list__check sr-only" type="checkbox" name="material" :value="material.id" v-model="checkedMaterials">
               <span class="check-list__desc">
                     {{ material.title }}
                     <span>({{ material.productsCount }})</span>
@@ -51,7 +51,7 @@
 
           <li class="check-list__item" v-for="season in seasons" :key="season.id">
             <label class="check-list__label">
-              <input class="check-list__check sr-only" type="checkbox" name="collection" :value="season.title">
+              <input class="check-list__check sr-only" type="checkbox" name="collection" :value="season.id" v-model="checkedSeasons">
               <span class="check-list__desc">
                     {{ season.title }}
                     <span>({{ season.productsCount }})</span>
@@ -62,7 +62,7 @@
         </ul>
       </fieldset>
 
-      <button class="filter__submit button button--primery" type="submit" @click="filterProducts">
+      <button class="filter__submit button button--primery" type="submit" @click="getFilterProducts">
         Применить
       </button>
       <button class="filter__reset button button--second" type="button" @click="clearFilters">
@@ -85,8 +85,10 @@ export default {
       categories: [],
       categoryId: null,
       seasons: [],
+      checkedSeasons: [],
       isSeasonsLoading: false,
       materials: [],
+      checkedMaterials: [],
       isMaterialsLoading: false,
     }
   },
@@ -116,23 +118,31 @@ export default {
             this.isMaterialsLoading = false;
           })
     },
-    filterProducts() {
-      console.log(this.$store.state.productsData)
-      if (this.priceFrom > 0) {
-        this.$store.commit('updateProductsData', this.$store.state.productsData.filter(product => product.price > this.priceFrom));
-      }
+    getFilterProducts() {
+      this.$store.commit('updateLoadingProductsDataStatus');
 
-      if (this.priceTo > 0) {
-        this.$store.commit('updateProductsData', this.$store.state.productsData.filter(product => product.price < this.priceTo));
-      }
-
-      if (this.categoryId) {
-        this.$store.commit('updateProductsData', this.$store.state.productsData.filter(product => product.categoryId === this.categoryId));
-      }
+      axios.
+      get(`${API_DEFAULT_URL}api/products`, {
+        params: {
+          categoryId: this.categoryId,
+          'materialIds[]': this.checkedMaterials,
+          'seasonIds[]': this.checkedSeasons,
+          minPrice: this.priceFrom,
+          maxPrice: this.priceTo
+        }
+      })
+        .then(res => {
+          this.$store.commit('updateProductsData', res.data.items);
+          this.$store.commit('updateLoadingProductsDataStatus');
+          console.log(res.data)
+        })
     },
     clearFilters() {
       this.priceFrom = null;
       this.priceTo = null;
+      this.categoryId = null;
+      this.$store.dispatch('getProductsData');
+
     }
   },
   created() {

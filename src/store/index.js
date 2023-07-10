@@ -29,10 +29,10 @@ export default new Vuex.Store({
         state.basketProductsData = products;
       }
     },
-    updateLoadingProductsDataStatus(state, status) {
+    updateLoadingProductsDataStatus(state) {
       state.isLoadingProductsData = !state.isLoadingProductsData;
     },
-    updateLoadingBasketDataStatus(state, status) {
+    updateLoadingBasketDataStatus(state) {
       state.isLoadingBasketProductsData = !state.isLoadingBasketProductsData;
     },
   },
