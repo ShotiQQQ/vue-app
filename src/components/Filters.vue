@@ -119,30 +119,35 @@ export default {
           })
     },
     getFilterProducts() {
-      this.$store.commit('updateLoadingProductsDataStatus');
+      if (this.priceFrom || this.priceTo || this.categoryId || this.checkedSeasons.length || this.checkedMaterials.length) {
+        this.$store.commit('updateLoadingProductsDataStatus');
 
-      axios.
-      get(`${API_DEFAULT_URL}api/products`, {
-        params: {
-          categoryId: this.categoryId,
-          'materialIds[]': this.checkedMaterials,
-          'seasonIds[]': this.checkedSeasons,
-          minPrice: this.priceFrom,
-          maxPrice: this.priceTo
-        }
-      })
-        .then(res => {
-          this.$store.commit('updateProductsData', res.data.items);
-          this.$store.commit('updateLoadingProductsDataStatus');
-          console.log(res.data)
+        axios.
+        get(`${API_DEFAULT_URL}api/products`, {
+          params: {
+            categoryId: this.categoryId,
+            'materialIds[]': this.checkedMaterials,
+            'seasonIds[]': this.checkedSeasons,
+            minPrice: this.priceFrom,
+            maxPrice: this.priceTo
+          }
         })
+            .then(res => {
+              this.$store.commit('updateProductsData', res.data.items);
+              this.$store.commit('updateLoadingProductsDataStatus');
+              console.log(res.data)
+            })
+      }
     },
     clearFilters() {
-      this.priceFrom = null;
-      this.priceTo = null;
-      this.categoryId = null;
-      this.$store.dispatch('getProductsData');
-
+      if (this.priceFrom || this.priceTo || this.categoryId || this.checkedSeasons.length || this.checkedMaterials.length) {
+        this.priceFrom = null;
+        this.priceTo = null;
+        this.categoryId = null;
+        this.checkedSeasons = [];
+        this.checkedMaterials = [];
+        this.$store.dispatch('getProductsData');
+      }
     }
   },
   created() {
