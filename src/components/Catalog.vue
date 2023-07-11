@@ -3,14 +3,14 @@
   <ul class="catalog__list">
 
     <li class="catalog__item" v-for="product in products" :key="product.id">
-      <a class="catalog__pic" href="#">
+      <router-link :to="{name: 'product', params: {productId: product.id}}" class="catalog__pic">
         <img :src="product.colors[0].gallery ? product.colors[0].gallery[0].file.url : 'images/no-img.png'" :alt="product.colors[0].gallery ? product.title : 'Изображение товара отсутствует'">
-      </a>
+      </router-link>
 
       <h3 class="catalog__title">
-        <a href="#">
+        <router-link  :to="{name: 'product', params: {productId: product.id}}">
           {{ product.title }}
-        </a>
+        </router-link>
       </h3>
 
       <span class="catalog__price">
