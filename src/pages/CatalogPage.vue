@@ -46,18 +46,6 @@ export default {
     }
   },
   created() {
-    const userAccessKey = localStorage.getItem('userAccessKey');
-    if (userAccessKey) {
-      this.$store.commit('updateUserAccessKey', userAccessKey);
-    } else {
-      axios.
-      get(`${API_DEFAULT_URL}api/users/accessKey`)
-          .then(res => {
-            this.$store.commit('updateUserAccessKey', res.data.accessKey);
-            localStorage.setItem('userAccessKey', res.data.accessKey);
-          })
-    }
-
     this.$store.dispatch('getProductsData');
   },
 }

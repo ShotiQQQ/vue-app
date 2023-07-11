@@ -77,7 +77,7 @@
 
                     <li class="colors__item" v-for="color in productInfo.colors">
                       <label class="colors__label">
-                        <input class="colors__radio sr-only" type="radio" name="color-item" :value="color.color.id">
+                        <input class="colors__radio sr-only" type="radio" name="color-item" :value="color.color.id" v-model="productColor">
                         <span class="colors__value" :style="{backgroundColor: color.color.code}">
                       </span>
                       </label>
@@ -90,15 +90,16 @@
                 <fieldset class="form__block">
                   <legend class="form__legend">Размер</legend>
                   <label class="form__label form__label--small form__label--select">
-                    <select class="form__select" type="text" name="category">
+                    <select class="form__select" type="text" name="category" v-model:value="productSize">
                       <option :value="size.id" v-for="size in productInfo.sizes">{{ size.title }}</option>
                     </select>
                   </label>
                 </fieldset>
               </div>
 
-              <button class="item__button button button--primery" type="submit">
-                В корзину
+              <button class="item__button button button--primery" type="submit" :disabled="isAddLoading" @click="addProductToBasket">
+                <span v-if="!isAddLoading">В корзину</span>
+                <span v-else>Подождите...</span>
               </button>
             </form>
           </div>
@@ -156,9 +157,13 @@ export default {
   components: {Loader, Header, Footer},
   data() {
     return {
+      productId: this.$route.params.productId,
       productCount: 1,
+      productColor: null,
+      productSize: null,
       productInfo: {},
       productInfoLoading: false,
+      isAddLoading: false,
     }
   },
   methods: {
@@ -169,6 +174,28 @@ export default {
       if (this.productCount > 1) {
         this.productCount -= 1;
       }
+    },
+    addProductToBasket() {
+      this.isAddLoading = true;
+
+      axios.
+        post(`${API_DEFAULT_URL}api/baskets/products`, {
+          productId: +this.productId,
+          colorId: this.productColor,
+          sizeId: this.productSize,
+          quantity: this.productCount,
+        }, {
+          params: {
+            userAccessKey: this.$store.state.userAccessKey
+          }
+        })
+        .then(res => {
+          this.$store.dispatch('getBasketProductsData');
+        })
+        .catch(error => {
+          alert(Object.values(error.response.data.error.request)[0]);
+        })
+        .finally(() => this.isAddLoading = false);
     }
   },
   filters: {
@@ -178,7 +205,7 @@ export default {
     this.productInfoLoading = true;
 
     axios.
-      get(`${API_DEFAULT_URL}api/products/${this.$route.params.productId}`)
+      get(`${API_DEFAULT_URL}api/products/${this.productId}`)
       .then(res => {
         this.productInfo = res.data;
         this.productInfoLoading = false;
