@@ -32,7 +32,7 @@
           </div>
           <ul class="pics__list">
 
-          <li class="pics__item" v-for="img in productInfo.colors" v-if="productInfo.colors[0].gallery">
+          <li class="pics__item" v-for="img in productInfo.colors" :key="img.id">
             <a href="" class="pics__link">
               <img width="98" height="98" :src="img.gallery[0].file.url" :alt="img.gallery[0].originalName">
             </a>
@@ -75,11 +75,10 @@
                   <legend class="form__legend">Цвет</legend>
                   <ul class="colors colors--black">
 
-                    <li class="colors__item" v-for="color in productInfo.colors">
+                    <li class="colors__item" v-for="(color, index) in productInfo.colors" :key="color.color.id">
                       <label class="colors__label">
                         <input class="colors__radio sr-only" type="radio" name="color-item" :value="color.color.id" v-model="productColor">
-                        <span class="colors__value" :style="{backgroundColor: color.color.code}">
-                      </span>
+                        <span class="colors__value" :style="{backgroundColor: color.color.code}"></span>
                       </label>
                     </li>
 
@@ -90,8 +89,9 @@
                 <fieldset class="form__block">
                   <legend class="form__legend">Размер</legend>
                   <label class="form__label form__label--small form__label--select">
-                    <select class="form__select" type="text" name="category" v-model:value="productSize">
-                      <option :value="size.id" v-for="size in productInfo.sizes">{{ size.title }}</option>
+                    <select class="form__select" type="text" name="category" v-model="productSize">
+                      <option disabled value="">Выберите цвет</option>
+                      <option :value="size.id" v-for="(size, index) in productInfo.sizes" :key="size.id" :selected="index == 0">{{ size.title }}</option>
                     </select>
                   </label>
                 </fieldset>
@@ -108,22 +108,22 @@
         <div class="item__desc">
           <ul class="tabs">
             <li class="tabs__item">
-              <a class="tabs__link tabs__link--current">
+              <a class="tabs__link" :class="{'tabs__link--current': !isDeliveryContentVisible}" @click="isDeliveryContentVisible = false">
                 Информация о товаре
               </a>
             </li>
             <li class="tabs__item">
-              <a class="tabs__link" href="#">
+              <a class="tabs__link" :class="{'tabs__link--current': isDeliveryContentVisible}" @click="isDeliveryContentVisible = true">
                 Доставка и возврат
               </a>
             </li>
           </ul>
 
-          <div class="item__content">
+          <div class="item__content" v-if="isDeliveryContentVisible">
             <h3>Состав:</h3>
 
             <p>
-              <span v-for="material in productInfo.materials">{{ material.title }} <br></span>
+              <span v-for="material in productInfo.materials" :key="material.id">{{ material.title }} <br></span>
             </p>
 
             <h3>Уход:</h3>
@@ -137,6 +137,26 @@
             </p>
 
           </div>
+
+          <div class="item__content" v-else>
+            <h3>Доставка:</h3>
+
+            <p>
+              1. Курьерская доставка по Москве и Московской области – 290 ₽<br>
+              2.Самовывоз из магазина. Список и адреса магазинов Вы можете посмотреть здесь<br>
+            </p>
+
+            <h3>Возврат:</h3>
+
+            <p>
+              Любой возврат должен быть осуществлен в течение Возвраты в магазине БЕСПЛАТНО.<br>
+              Вы можете вернуть товары в любой магазин. Магазин должен быть расположен в стране, в которой Вы осуществили покупку.
+              БЕСПЛАТНЫЙ возврат в Пункт выдачи заказов.<br>
+              Для того чтобы вернуть товар в одном из наших Пунктов выдачи заказов, позвоните по телефону 8 800 600 90 09<br>
+            </p>
+
+          </div>
+
         </div>
       </section>
     </main>
@@ -164,6 +184,7 @@ export default {
       productInfo: {},
       productInfoLoading: false,
       isAddLoading: false,
+      isDeliveryContentVisible: false,
     }
   },
   methods: {
@@ -224,5 +245,9 @@ export default {
 
   .main-img {
     max-height: 570px;
+  }
+
+  .tabs__link {
+    cursor: pointer;
   }
 </style>
