@@ -42,7 +42,7 @@
         </div>
 
         <div class="item__info">
-          <span class="item__code">Артикул: {{ productInfo.id}} </span>
+          <span class="item__code">Артикул: {{ productInfo.id }} </span>
           <h2 class="item__title">
             {{ productInfo.title }}
           </h2>
@@ -89,9 +89,9 @@
                 <fieldset class="form__block">
                   <legend class="form__legend">Размер</legend>
                   <label class="form__label form__label--small form__label--select">
-                    <select class="form__select" type="text" name="category" v-model="productSize">
-                      <option disabled value="">Выберите цвет</option>
-                      <option :value="size.id" v-for="(size, index) in productInfo.sizes" :key="size.id" :selected="index == 0">{{ size.title }}</option>
+                    <select class="form__select" type="text" name="category" v-model="productSize.selected">
+                      <option disabled value="">Выберите размер</option>
+                      <option :value="size.id" v-for="(size, index) in productSize.options" :key="size.id" :selected="index == 0">{{ size.title }}</option>
                     </select>
                   </label>
                 </fieldset>
@@ -180,7 +180,10 @@ export default {
       productId: this.$route.params.productId,
       productCount: 1,
       productColor: null,
-      productSize: null,
+      productSize: {
+        selected: '',
+        options: []
+      },
       productInfo: {},
       productInfoLoading: false,
       isAddLoading: false,
@@ -197,26 +200,31 @@ export default {
       }
     },
     addProductToBasket() {
-      this.isAddLoading = true;
+      if (this.productColor) {
+        this.isAddLoading = true;
 
-      axios.
+        axios.
         post(`${API_DEFAULT_URL}api/baskets/products`, {
           productId: +this.productId,
           colorId: this.productColor,
-          sizeId: this.productSize,
+          sizeId: this.productSize.selected,
           quantity: this.productCount,
         }, {
           params: {
             userAccessKey: this.$store.state.userAccessKey
           }
         })
-        .then(res => {
-          this.$store.dispatch('getBasketProductsData');
-        })
-        .catch(error => {
-          alert(Object.values(error.response.data.error.request)[0]);
-        })
-        .finally(() => this.isAddLoading = false);
+            .then(res => {
+              this.$store.dispatch('getBasketProductsData');
+              alert('Поздравляем, товар добавлен');
+            })
+            .catch(error => {
+              alert(Object.values(error.response.data.error.request)[0]);
+            })
+            .finally(() => this.isAddLoading = false);
+      } else {
+        alert('Пожалуйста, выберите цвет товара');
+      }
     }
   },
   filters: {
@@ -230,6 +238,7 @@ export default {
       .then(res => {
         this.productInfo = res.data;
         this.productInfoLoading = false;
+        this.productSize.options = this.productInfo.sizes;
       })
   }
 }
