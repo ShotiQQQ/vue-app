@@ -17,16 +17,13 @@
   import {API_DEFAULT_URL} from "@/config";
 
   export default {
-    data() {
-      return {
-        productsData: this.$store.state.productsData,
-      }
-    },
+
     components: {Header, Footer},
     created() {
       const userAccessKey = localStorage.getItem('userAccessKey');
       if (userAccessKey) {
         this.$store.commit('updateUserAccessKey', userAccessKey);
+        this.$store.dispatch('getBasketProductsData');
       } else {
         axios.
         get(`${API_DEFAULT_URL}api/users/accessKey`)

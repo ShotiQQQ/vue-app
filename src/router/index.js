@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import CatalogPage from "@/pages/CatalogPage.vue";
 import ProductInfoPage from "@/pages/ProductInfoPage.vue";
+import BasketPage from "@/pages/BasketPage.vue";
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ const routes = [
     name: 'product',
     props: true,
     component: ProductInfoPage
+  },
+  {
+    path: '/basket',
+    name: 'basket',
+    component: BasketPage
   },
 ]
 
