@@ -20,14 +20,16 @@
           Корзина
         </h1>
         <span class="content__info" v-if="this.$store.getters.getBasketInfo">
-          {{ this.$store.getters.getBasketInfo.length }} товара
+          {{ $store.getters.getBasketInfo.length }} товара
         </span>
       </div>
     </div>
 
+    <section class="cart" v-if="!$store.getters.getBasketInfo.length">
+      <h3>К сожалению, корзина пустая</h3>
+    </section>
 
-
-    <section class="cart">
+    <section class="cart" v-else>
       <Loader v-if="$store.state.isLoadingBasketProductsData" />
 
       <form class="cart__form form" action="#" method="POST" @submit.prevent v-else>
@@ -67,7 +69,7 @@ export default {
   components: {BasketProduct, Loader},
   data() {
     return {
-      
+
     }
   },
 }

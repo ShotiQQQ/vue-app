@@ -2,7 +2,7 @@
 
   <ul class="catalog__pagination pagination">
     <li class="pagination__item">
-      <a class="pagination__link pagination__link--arrow" aria-label="Предыдущая страница" @click.prevent="prevPaginate(page)">
+      <a class="pagination__link pagination__link--arrow" aria-label="Предыдущая страница" @click.prevent="prevPaginate(page)" v-if="pages > 1">
         <svg width="8" height="14" fill="currentColor">
           <use xlink:href="#icon-arrow-left"></use>
         </svg>
@@ -16,7 +16,7 @@
     </li>
 
     <li class="pagination__item">
-      <a class="pagination__link pagination__link--arrow" href="#" aria-label="Следующая страница" @click.prevent="nextPaginate(page)">
+      <a class="pagination__link pagination__link--arrow" href="#" aria-label="Следующая страница" @click.prevent="nextPaginate(page)" v-if="pages > 1">
         <svg width="8" height="14" fill="currentColor">
           <use xlink:href="#icon-arrow-right"></use>
         </svg>
