@@ -14,6 +14,9 @@ export default new Vuex.Store({
     isLoadingBasketProductsData: false,
   },
   getters: {
+    getBasketInfo(state) {
+      return state.basketProductsData
+    }
   },
   mutations: {
     updateUserAccessKey(state, accessKey) {
@@ -45,7 +48,7 @@ export default new Vuex.Store({
         params: {
           userAccessKey: context.state.userAccessKey
         }
-      })
+        })
         .then(res => {
           context.commit('updateProductsData', res.data.items);
           context.commit('updateLoadingProductsDataStatus');
@@ -55,14 +58,42 @@ export default new Vuex.Store({
       context.commit('updateLoadingBasketDataStatus');
 
       axios.
-      get(`${API_DEFAULT_URL}api/baskets`, {
-        params: {
-          userAccessKey: context.state.userAccessKey
-        }
-      })
+        get(`${API_DEFAULT_URL}api/baskets`, {
+          params: {
+            userAccessKey: context.state.userAccessKey
+          }
+        })
         .then(res => {
           context.commit('updateBasketProductsData', res.data.items);
           context.commit('updateLoadingBasketDataStatus');
+        })
+    },
+    deleteProductFromBasket(context, payload) {
+      axios.
+        delete(`${API_DEFAULT_URL}api/baskets/products`, {
+          data: {
+            basketItemId: payload
+          },
+          params: {
+            userAccessKey: context.state.userAccessKey
+          }
+        })
+        .then(res => {
+          context.commit('updateBasketProductsData', res.data.items);
+        })
+    },
+    changeQuantityProductBasket(context, payload) {
+      axios.
+        put(`${API_DEFAULT_URL}api/baskets/products`, {
+          basketItemId: payload.id,
+          quantity: payload.quantity
+        }, {
+          params: {
+            userAccessKey: context.state.userAccessKey
+          }
+        })
+        .then(res => {
+          context.commit('updateBasketProductsData', res.data.items);
         })
     }
   },

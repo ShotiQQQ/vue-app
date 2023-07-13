@@ -12,12 +12,12 @@
         8 800 600 90 09
       </a>
 
-      <a class="header__cart" href="cart.html" aria-label="Корзина с товарами">
+      <router-link :to="{name: 'basket'}" class="header__cart" aria-label="Корзина с товарами">
         <svg width="19" height="24">
           <use xlink:href="#icon-cart"></use>
         </svg>
         <span class="header__count" aria-label="Количество товаров">{{$store.state.isLoadingBasketProductsData ? '?' : $store.state.basketProductsData.length}}</span>
-      </a>
+      </router-link>
     </div>
   </header>
 
@@ -25,8 +25,6 @@
 
 <script>
 export default {
-  created() {
-    this.$store.dispatch('getBasketProductsData');
-  }
+
 }
 </script>
