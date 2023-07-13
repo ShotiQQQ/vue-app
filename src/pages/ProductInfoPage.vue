@@ -34,7 +34,7 @@
 
           <li class="pics__item" v-for="img in productInfo.colors" :key="img.id">
             <a href="" class="pics__link">
-              <img width="98" height="98" :src="img.gallery[0].file.url" :alt="img.gallery[0].originalName">
+              <img width="98" height="98" :src="img.gallery ? img.gallery[0].file.url : 'images/no-img.png'" :alt="img.gallery ? img.gallery[0].originalName : 'Изображение товара отсутствует'">
             </a>
           </li>
 
