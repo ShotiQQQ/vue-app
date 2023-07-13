@@ -21,8 +21,6 @@
 import Filters from "@/components/Filters.vue";
 import Catalog from "@/components/Catalog.vue";
 import MainContainer from "@/components/MainContainer.vue";
-import axios from "axios";
-import {API_DEFAULT_URL} from "@/config";
 import Loader from "@/components/Loader.vue";
 import Pagination from "@/components/Pagination.vue";
 

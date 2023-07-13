@@ -16,6 +16,11 @@ export default new Vuex.Store({
   getters: {
     getBasketInfo(state) {
       return state.basketProductsData
+    },
+    getFullPrice(state) {
+      return state.basketProductsData.reduce((acc, item) => {
+        return acc + (item.price * item.quantity)
+      }, 0)
     }
   },
   mutations: {

@@ -44,7 +44,7 @@
             Мы&nbsp;посчитаем стоимость доставки на&nbsp;следующем этапе
           </p>
           <p class="cart__price">
-            Итого: <span>4 070 ₽</span>
+            Итого: <span>{{ $store.getters.getFullPrice | numberFormat }} ₽</span>
           </p>
 
           <button class="cart__button button button--primery" type="submit">
@@ -60,12 +60,14 @@
 <script>
 import Loader from "@/components/Loader.vue";
 import BasketProduct from "@/components/BasketProduct.vue";
+import numberFormat from "../helpers/numberFormat";
 
 export default {
+  filters: {numberFormat},
   components: {BasketProduct, Loader},
   data() {
     return {
-
+      
     }
   },
 }
