@@ -17,9 +17,9 @@
       <fieldset class="form__block">
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select">
-          <select class="form__select" type="text" name="category" v-model="categoryId">
-            <option value="">Все категории</option>
-            <option :value="category.id" v-for="category in categories" :key="category.id">{{category.title}}</option>
+          <select class="form__select" type="text" name="category" v-model="currentCategories.id">
+            <option value="" disabled>Все категории</option>
+            <option :value="category.id" v-for="category in currentCategories.categories" :key="category.id">{{category.title}}</option>
           </select>
         </label>
       </fieldset>
@@ -82,8 +82,10 @@ export default {
     return {
       priceFrom: null,
       priceTo: null,
-      categories: [],
-      categoryId: null,
+      currentCategories: {
+        id: '',
+        categories: []
+      },
       seasons: [],
       checkedSeasons: [],
       isSeasonsLoading: false,
@@ -97,7 +99,7 @@ export default {
       axios.
         get(`${API_DEFAULT_URL}api/productCategories`)
         .then(res => {
-          this.categories = res.data.items;
+          this.currentCategories.categories = res.data.items;
         })
     },
     getSeasons() {
@@ -119,13 +121,13 @@ export default {
           })
     },
     getFilterProducts() {
-      if (this.priceFrom || this.priceTo || this.categoryId || this.checkedSeasons.length || this.checkedMaterials.length) {
+      if (this.priceFrom || this.priceTo || this.currentCategories.id || this.checkedSeasons.length || this.checkedMaterials.length) {
         this.$store.commit('updateLoadingProductsDataStatus');
 
         axios.
         get(`${API_DEFAULT_URL}api/products`, {
           params: {
-            categoryId: this.categoryId,
+            categoryId: this.currentCategories.id,
             'materialIds[]': this.checkedMaterials,
             'seasonIds[]': this.checkedSeasons,
             minPrice: this.priceFrom,
@@ -140,10 +142,10 @@ export default {
       }
     },
     clearFilters() {
-      if (this.priceFrom || this.priceTo || this.categoryId || this.checkedSeasons.length || this.checkedMaterials.length) {
+      if (this.priceFrom || this.priceTo || this.currentCategories.id || this.checkedSeasons.length || this.checkedMaterials.length) {
         this.priceFrom = null;
         this.priceTo = null;
-        this.categoryId = null;
+        this.currentCategories.id = null;
         this.checkedSeasons = [];
         this.checkedMaterials = [];
         this.$store.dispatch('getProductsData');
