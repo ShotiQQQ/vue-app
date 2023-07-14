@@ -119,7 +119,7 @@
             </li>
           </ul>
 
-          <div class="item__content" v-if="isDeliveryContentVisible">
+          <div class="item__content" v-if="!isDeliveryContentVisible">
             <h3>Состав:</h3>
 
             <p>
