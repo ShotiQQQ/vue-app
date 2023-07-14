@@ -18,9 +18,27 @@
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select">
           <select class="form__select" type="text" name="category" v-model="currentCategories.id">
-            <option value="" disabled>Все категории</option>
+            <option value="">Все категории</option>
             <option :value="category.id" v-for="category in currentCategories.categories" :key="category.id">{{category.title}}</option>
           </select>
+        </label>
+      </fieldset>
+
+      <fieldset class="form__block">
+        <legend class="form__legend">Цвета</legend>
+        <label class="form__label">
+
+          <ul class="colors colors--black" v-if="colors.length">
+
+            <li class="colors__item" v-for="color in colors" :key="color.id">
+              <label class="colors__label">
+                <input class="colors__radio sr-only" type="checkbox" name="color-item" :value="color.id" v-model="checkedColors">
+                <span class="colors__value" :style="{backgroundColor: color.code}"></span>
+              </label>
+            </li>
+
+          </ul>
+
         </label>
       </fieldset>
 
@@ -82,6 +100,8 @@ export default {
     return {
       priceFrom: null,
       priceTo: null,
+      colors: [],
+      checkedColors: [],
       currentCategories: {
         id: '',
         categories: []
@@ -95,6 +115,13 @@ export default {
     }
   },
   methods: {
+    getColors() {
+      axios.
+      get(`${API_DEFAULT_URL}api/colors`)
+          .then(res => {
+            this.colors = res.data.items;
+          })
+    },
     getCategories() {
       axios.
         get(`${API_DEFAULT_URL}api/productCategories`)
@@ -121,30 +148,31 @@ export default {
           })
     },
     getFilterProducts() {
-      if (this.priceFrom || this.priceTo || this.currentCategories.id || this.checkedSeasons.length || this.checkedMaterials.length) {
+      if (this.priceFrom || this.priceTo || this.currentCategories.id || this.checkedColors.length || this.checkedSeasons.length || this.checkedMaterials.length) {
         this.$store.commit('updateLoadingProductsDataStatus');
 
         axios.
         get(`${API_DEFAULT_URL}api/products`, {
           params: {
             categoryId: this.currentCategories.id,
+            'colorIds[]': this.checkedColors,
             'materialIds[]': this.checkedMaterials,
             'seasonIds[]': this.checkedSeasons,
             minPrice: this.priceFrom,
             maxPrice: this.priceTo
           }
         })
-            .then(res => {
-              this.$store.commit('updateProductsData', res.data.items);
-              this.$store.commit('updateLoadingProductsDataStatus');
-              console.log(res.data)
-            })
+          .then(res => {
+            this.$store.commit('updateProductsData', res.data.items);
+            this.$store.commit('updateLoadingProductsDataStatus');
+          })
       }
     },
     clearFilters() {
-      if (this.priceFrom || this.priceTo || this.currentCategories.id || this.checkedSeasons.length || this.checkedMaterials.length) {
+      if (this.priceFrom || this.priceTo || this.checkedColors.length || this.currentCategories.id || this.checkedSeasons.length || this.checkedMaterials.length) {
         this.priceFrom = null;
         this.priceTo = null;
+        this.checkedColors = [];
         this.currentCategories.id = null;
         this.checkedSeasons = [];
         this.checkedMaterials = [];
@@ -153,6 +181,7 @@ export default {
     }
   },
   created() {
+    this.getColors();
     this.getCategories();
     this.getSeasons();
     this.getMaterials();
