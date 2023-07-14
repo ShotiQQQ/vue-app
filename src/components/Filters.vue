@@ -83,7 +83,7 @@
       <button class="filter__submit button button--primery" type="submit" @click="getFilterProducts">
         Применить
       </button>
-      <button class="filter__reset button button--second" type="button" @click="clearFilters">
+      <button class="filter__reset button button--second" type="button" v-if="priceFrom || priceTo || checkedColors.length || currentCategories.id || checkedSeasons.length || checkedMaterials.length" @click="clearFilters">
         Сбросить
       </button>
     </form>

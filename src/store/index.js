@@ -12,6 +12,7 @@ export default new Vuex.Store({
     isLoadingProductsData: false,
     basketProductsData: [],
     isLoadingBasketProductsData: false,
+    deliveryInfo: [],
   },
   getters: {
     getBasketInfo(state) {
@@ -43,6 +44,9 @@ export default new Vuex.Store({
     updateLoadingBasketDataStatus(state) {
       state.isLoadingBasketProductsData = !state.isLoadingBasketProductsData;
     },
+    updateDeliveryInfo(state, deliveries) {
+      state.deliveryInfo = deliveries;
+    }
   },
   actions: {
     getProductsData(context) {
@@ -99,6 +103,13 @@ export default new Vuex.Store({
         })
         .then(res => {
           context.commit('updateBasketProductsData', res.data.items);
+        })
+    },
+    getDeliveryInfo(context) {
+      axios.
+      get(`${API_DEFAULT_URL}api/deliveries`)
+        .then(res => {
+          context.commit('updateDeliveryInfo', res.data);
         })
     }
   },

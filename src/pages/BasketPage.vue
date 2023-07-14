@@ -49,9 +49,9 @@
             Итого: <span>{{ $store.getters.getFullPrice | numberFormat }} ₽</span>
           </p>
 
-          <button class="cart__button button button--primery" type="submit">
+          <router-link :to="{name: 'ordering'}" tag="button" class="cart__button button button--primery" type="submit">
             Оформить заказ
-          </button>
+          </router-link>
         </div>
       </form>
     </section>
