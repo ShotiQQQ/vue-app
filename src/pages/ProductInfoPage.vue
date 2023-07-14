@@ -142,8 +142,8 @@
             <h3>Доставка:</h3>
 
             <p>
-              1. Курьерская доставка по Москве и Московской области – 290 ₽<br>
-              2.Самовывоз из магазина. Список и адреса магазинов Вы можете посмотреть здесь<br>
+              1. {{ $store.state.deliveryInfo[1].title }} – {{ $store.state.deliveryInfo[1].price | numberFormat }} ₽<br>
+              2. {{ $store.state.deliveryInfo[0].title }}<br>
             </p>
 
             <h3>Возврат:</h3>

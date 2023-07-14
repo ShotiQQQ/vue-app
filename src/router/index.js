@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import CatalogPage from "@/pages/CatalogPage.vue";
 import ProductInfoPage from "@/pages/ProductInfoPage.vue";
 import BasketPage from "@/pages/BasketPage.vue";
+import OrderingPage from "@/pages/OrderingPage.vue";
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes = [
     name: 'basket',
     component: BasketPage
   },
+  {
+    path: '/basket/ordering',
+    name: 'ordering',
+    component: OrderingPage
+  }
 ]
 
 const router = new VueRouter({

@@ -32,6 +32,8 @@
               localStorage.setItem('userAccessKey', res.data.accessKey);
             })
       }
+
+      this.$store.dispatch('getDeliveryInfo');
     }
   }
 </script>
