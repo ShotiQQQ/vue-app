@@ -4,14 +4,14 @@
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="index.html">
+          <router-link :to="{name: 'home'}" class="breadcrumbs__link" href="index.html">
             Каталог
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="cart.html">
+          <router-link :to="{name: 'basket'}" class="breadcrumbs__link" href="cart.html">
             Корзина
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
           <a class="breadcrumbs__link">
@@ -28,28 +28,31 @@
     </div>
 
     <section class="cart">
-      <form class="cart__form form" action="#" method="POST">
+      <form class="cart__form form" action="#" method="POST" @submit.prevent>
         <div class="cart__field">
           <div class="cart__data">
             <label class="form__label">
-              <input class="form__input" type="text" name="name" placeholder="Введите ваше полное имя">
+              <input class="form__input" v-model="name.value" type="text" name="name" placeholder="Введите ваше полное имя">
               <span class="form__value">ФИО</span>
+              <span class="form__error" v-if="name.errorText">{{ name.errorText }}</span>
             </label>
 
             <label class="form__label">
-              <input class="form__input" type="text" name="address" placeholder="Введите ваш адрес">
+              <input class="form__input" v-model="address.value" type="text" name="address" placeholder="Введите ваш адрес">
               <span class="form__value">Адрес доставки</span>
+              <span class="form__error" v-if="address.errorText">{{ address.errorText }}</span>
             </label>
 
             <label class="form__label">
-              <input class="form__input" type="tel" name="phone" placeholder="Введите ваш телефон">
+              <input class="form__input" v-model="telephone.value" type="tel" name="phone" placeholder="Введите ваш телефон">
               <span class="form__value">Телефон</span>
-              <span class="form__error">Неверный формат телефона</span>
+              <span class="form__error" v-if="telephone.errorText">{{ telephone.errorText }}</span>
             </label>
 
             <label class="form__label">
-              <input class="form__input" type="email" name="email" placeholder="Введи ваш Email">
+              <input class="form__input" v-model="email.value" type="email" name="email" placeholder="Введи ваш Email">
               <span class="form__value">Email</span>
+              <span class="form__error" v-if="email.errorText">{{ email.errorText }}</span>
             </label>
 
             <label class="form__label">
@@ -63,7 +66,7 @@
             <ul class="cart__options options">
               <li class="options__item">
                 <label class="options__label">
-                  <input class="options__radio sr-only" type="radio" name="delivery" value="0" checked="">
+                  <input class="options__radio sr-only" type="radio" v-model="delivery" name="delivery" value="1">
                   <span class="options__value">
                     Самовывоз <b>бесплатно</b>
                   </span>
@@ -71,9 +74,9 @@
               </li>
               <li class="options__item">
                 <label class="options__label">
-                  <input class="options__radio sr-only" type="radio" name="delivery" value="500">
+                  <input class="options__radio sr-only" type="radio" v-model="delivery" name="delivery" value="2">
                   <span class="options__value">
-                    Курьером <b>290 ₽</b>
+                    Курьером <b v-if="$store.state.deliveryInfo.length">{{ $store.state.deliveryInfo[1].price | numberFormat }} ₽</b>
                   </span>
                 </label>
               </li>
@@ -83,7 +86,7 @@
             <ul class="cart__options options">
               <li class="options__item">
                 <label class="options__label">
-                  <input class="options__radio sr-only" type="radio" name="pay" value="card" checked="">
+                  <input class="options__radio sr-only" v-model="payment" type="radio" name="pay" value="1">
                   <span class="options__value">
                     Картой при получении
                   </span>
@@ -91,7 +94,7 @@
               </li>
               <li class="options__item">
                 <label class="options__label">
-                  <input class="options__radio sr-only" type="radio" name="pay" value="cash">
+                  <input class="options__radio sr-only" v-model="payment" type="radio" name="pay" value="2">
                   <span class="options__value">
                     Наличными при получении
                   </span>
@@ -103,36 +106,29 @@
 
         <div class="cart__block">
           <ul class="cart__orders">
-            <li class="cart__order">
-              <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
-              <b>990 ₽</b>
-              <span>Артикул: 150030</span>
+
+            <li class="cart__order" v-for="product in $store.getters.getBasketInfo">
+              <h3>{{ product.product.title }}</h3>
+              <b>{{ product.product.price | numberFormat }} ₽</b>
+              <span>Артикул: {{ product.product.id }}</span>
             </li>
-            <li class="cart__order">
-              <h3>Гироскутер Razor Hovertrax 2.0ii</h3>
-              <b>1 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-            <li class="cart__order">
-              <h3>Электрический дрифт-карт Razor Lil’ Crazy</h3>
-              <b>4 090 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
+
           </ul>
 
           <div class="cart__total">
-            <p>Доставка: <b>бесплатно</b></p>
-            <p>Итого: <b>3</b> товара на сумму <b>4 070 ₽</b></p>
+            <p>Доставка: <b v-if="$store.state.deliveryInfo.length">{{ $store.state.deliveryInfo[1].price | numberFormat }}</b></p>
+            <p>Итого: <b>{{ $store.getters.getBasketInfo.length }}</b> товара на сумму <b>{{ $store.getters.getFullPrice | numberFormat }} ₽</b></p>
           </div>
 
-          <button class="cart__button button button--primery" type="submit">
-            Оформить заказ
+          <button class="cart__button button button--primery" type="submit" :disabled="isLoading" @click="makeOrder">
+            <span v-if="isLoading">Подождите...</span>
+            <span v-else>Оформить заказ</span>
           </button>
         </div>
-        <div class="cart__error form__error-block">
+        <div class="cart__error form__error-block" v-if="isOrderError">
           <h4>Заявка не отправлена!</h4>
           <p>
-            Похоже произошла ошибка. Попробуйте отправить снова или перезагрузите страницу.
+            Похоже, произошла ошибка. Попробуйте отправить снова или перезагрузите страницу.
           </p>
         </div>
       </form>
@@ -142,5 +138,80 @@
 </template>
 
 <script>
-export default {}
+import numberFormat from "../helpers/numberFormat";
+import axios from "axios";
+import {API_DEFAULT_URL} from "@/config";
+
+export default {
+  data() {
+    return {
+      name: {
+        value: '',
+        errorText: ''
+      },
+      address: {
+        value: '',
+        errorText: ''
+      },
+      telephone: {
+        value: '',
+        errorText: ''
+      },
+      email: {
+        value: '',
+        errorText: ''
+      },
+      comment: '',
+      delivery: [],
+      payment: [],
+      isOrderError: false,
+      isLoading: false,
+    }
+  },
+  filters: {
+    numberFormat
+  },
+  methods: {
+    makeOrder() {
+      this.isLoading = true;
+      this.isOrderError = false;
+
+      axios.
+        post(`${API_DEFAULT_URL}api/orders`, {
+          name: this.name.value,
+          address: this.address.value,
+          phone: this.telephone.value,
+          email: this.email.value,
+          deliveryTypeId: this.delivery[0],
+          paymentTypeId: this.payment[0],
+          comment: this.comment
+        }, {
+          params: {
+            userAccessKey: this.$store.state.userAccessKey
+          }
+        })
+        .then(res => {
+          this.$router.push({name: 'success-order'});
+        })
+        .catch(error => {
+          const errorPath = error.response.data.error.request;
+
+          this.name.errorText = errorPath.name;
+          this.address.errorText = errorPath.address;
+          this.telephone.errorText = errorPath.phone;
+          this.email.errorText = errorPath.email;
+
+          if (errorPath.deliveryTypeId) {
+            alert(`Доставка - ${errorPath.deliveryTypeId}`);
+          }
+
+          if (errorPath.paymentTypeId) {
+            alert(`Оплата - ${errorPath.paymentTypeId}`);
+          }
+          this.isOrderError = true;
+        })
+        .finally(() => this.isLoading = false);
+    }
+  }
+}
 </script>
