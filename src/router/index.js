@@ -4,6 +4,7 @@ import CatalogPage from "@/pages/CatalogPage.vue";
 import ProductInfoPage from "@/pages/ProductInfoPage.vue";
 import BasketPage from "@/pages/BasketPage.vue";
 import OrderingPage from "@/pages/OrderingPage.vue";
+import SuccessOrderPage from "@/pages/SuccessOrderPage.vue";
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,11 @@ const routes = [
     path: '/basket/ordering',
     name: 'ordering',
     component: OrderingPage
+  },
+  {
+    path: '/basket/ordering/success',
+    name: 'success-order',
+    component: SuccessOrderPage
   }
 ]
 
