@@ -33,7 +33,7 @@ export default new Vuex.Store({
     },
     updateBasketProductsData(state, products) {
       if (!products) {
-        return [];
+        state.basketProductsData = [];
       } else {
         state.basketProductsData = products;
       }

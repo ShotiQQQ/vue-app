@@ -1,17 +1,17 @@
 <template>
 
-  <main class="content container">
+  <main class="content container" v-if="order">
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="index.html">
+          <router-link :to="{name: 'home'}" class="breadcrumbs__link" href="index.html">
             Каталог
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
-          <a class="breadcrumbs__link" href="cart.html">
+          <router-link :to="{name: 'basket'}" class="breadcrumbs__link" href="cart.html">
             Корзина
-          </a>
+          </router-link>
         </li>
         <li class="breadcrumbs__item">
           <a class="breadcrumbs__link">
@@ -21,7 +21,7 @@
       </ul>
 
       <h1 class="content__title">
-        Заказ оформлен <span>№ 23621</span>
+        Заказ оформлен <span>№ {{ order.id }}</span>
       </h1>
     </div>
 
@@ -39,7 +39,7 @@
                 Получатель
               </span>
               <span class="dictionary__value">
-                Иванова Василиса Алексеевна
+                {{ order.name }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -47,7 +47,7 @@
                 Адрес доставки
               </span>
               <span class="dictionary__value">
-                Москва, ул. Ленина, 21, кв. 33
+                {{ order.address }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -55,7 +55,7 @@
                 Телефон
               </span>
               <span class="dictionary__value">
-                8 800 989 74 84
+                {{ order.phone }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -63,7 +63,7 @@
                 Email
               </span>
               <span class="dictionary__value">
-                lalala@mail.ru
+                {{ order.email }}
               </span>
             </li>
             <li class="dictionary__item">
@@ -71,7 +71,7 @@
                 Способ оплаты
               </span>
               <span class="dictionary__value">
-                картой при получении
+                {{ order.paymentType }}
               </span>
             </li>
           </ul>
@@ -79,26 +79,18 @@
 
         <div class="cart__block">
           <ul class="cart__orders">
-            <li class="cart__order">
-              <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
-              <b>990 ₽</b>
-              <span>Артикул: 150030</span>
+
+            <li class="cart__order" v-for="item in order.basket.items" :key="item.id">
+              <h3>{{ item.product.title }}</h3>
+              <b>{{ item.product.price | numberFormat }} ₽</b>
+              <span>Артикул: {{ item.id }}</span>
             </li>
-            <li class="cart__order">
-              <h3>Гироскутер Razor Hovertrax 2.0ii</h3>
-              <b>1 990 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
-            <li class="cart__order">
-              <h3>Электрический дрифт-карт Razor Lil’ Crazy</h3>
-              <b>4 090 ₽</b>
-              <span>Артикул: 150030</span>
-            </li>
+
           </ul>
 
           <div class="cart__total">
-            <p>Доставка: <b>бесплатно</b></p>
-            <p>Итого: <b>3</b> товара на сумму <b>4 070 ₽</b></p>
+            <p>Доставка: <b>{{ +order.deliveryType.price === 0 ? 'бесплатно' : order.deliveryType.price }}</b></p>
+            <p>Итого: <b>{{ order.basket.items.length }}</b> товара на сумму <b>{{ order.totalPrice | numberFormat }} ₽</b></p>
           </div>
         </div>
       </form>
@@ -108,7 +100,14 @@
 </template>
 
 <script>
+import numberFormat from "../helpers/numberFormat";
+
 export default {
-  
+  data() {
+    return {
+      order: this.$route.params.items,
+    }
+  },
+  filters: {numberFormat},
 }
 </script>
