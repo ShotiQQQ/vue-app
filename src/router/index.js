@@ -31,8 +31,9 @@ const routes = [
     component: OrderingPage
   },
   {
-    path: '/basket/ordering/success',
+    path: '/basket/ordering/success:orderId',
     name: 'success-order',
+    props: true,
     component: SuccessOrderPage
   }
 ]

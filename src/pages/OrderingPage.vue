@@ -191,7 +191,8 @@ export default {
           }
         })
         .then(res => {
-          this.$router.push({name: 'success-order'});
+          this.$store.commit('updateBasketProductsData');
+          this.$router.push({name: 'success-order', params: {orderId: res.data.id, items: res.data}});
         })
         .catch(error => {
           const errorPath = error.response.data.error.request;
