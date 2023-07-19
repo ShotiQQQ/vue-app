@@ -5,6 +5,7 @@ import ProductInfoPage from "@/pages/ProductInfoPage.vue";
 import BasketPage from "@/pages/BasketPage.vue";
 import OrderingPage from "@/pages/OrderingPage.vue";
 import SuccessOrderPage from "@/pages/SuccessOrderPage.vue";
+import NotFoundPage from "@/pages/NotFoundPage.vue";
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,10 @@ const routes = [
     name: 'success-order',
     props: true,
     component: SuccessOrderPage
+  },
+  {
+    path: '*',
+    component: NotFoundPage
   }
 ]
 
