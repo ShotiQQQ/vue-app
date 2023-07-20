@@ -18,7 +18,7 @@
         <legend class="form__legend">Категория</legend>
         <label class="form__label form__label--select">
           <select class="form__select" type="text" name="category" v-model="currentCategories.id">
-            <option value="">Все категории</option>
+            <option value="0">Все категории</option>
             <option :value="category.id" v-for="category in currentCategories.categories" :key="category.id">{{category.title}}</option>
           </select>
         </label>
@@ -103,7 +103,7 @@ export default {
       colors: [],
       checkedColors: [],
       currentCategories: {
-        id: '',
+        id: 0,
         categories: []
       },
       seasons: [],
