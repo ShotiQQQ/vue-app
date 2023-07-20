@@ -62,6 +62,7 @@ export default new Vuex.Store({
           context.commit('updateProductsData', res.data.items);
           context.commit('updateLoadingProductsDataStatus');
         })
+        .catch(() => alert('Произошла ошибка при загрузке товаров, попробуйте перезагрузить страницу'));
     },
     getBasketProductsData(context) {
       context.commit('updateLoadingBasketDataStatus');
