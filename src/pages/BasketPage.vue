@@ -19,8 +19,8 @@
         <h1 class="content__title">
           Корзина
         </h1>
-        <span class="content__info" v-if="this.$store.getters.getBasketInfo">
-          {{ $store.getters.getBasketInfo.length }} товара
+        <span class="content__info" v-if="this.getBasketInfo">
+          {{ this.getBasketInfo.length }} товара
         </span>
       </div>
     </div>
@@ -63,6 +63,7 @@
 import Loader from "@/components/Loader.vue";
 import BasketProduct from "@/components/BasketProduct.vue";
 import numberFormat from "../helpers/numberFormat";
+import {mapGetters} from "vuex";
 
 export default {
   filters: {numberFormat},
@@ -72,6 +73,9 @@ export default {
 
     }
   },
+  computed: {
+    ...mapGetters(['getBasketInfo'])
+  }
 }
 </script>
 <style scoped>

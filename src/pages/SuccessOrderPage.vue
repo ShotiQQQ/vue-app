@@ -1,6 +1,10 @@
 <template>
 
-  <main class="content container" v-if="order">
+  <main class="content container" v-if="isLoading">
+    <Loader />
+  </main>
+
+  <main class="content container" v-else>
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
@@ -101,13 +105,47 @@
 
 <script>
 import numberFormat from "../helpers/numberFormat";
+import axios from "axios";
+import {API_DEFAULT_URL} from "@/config";
+import Loader from "@/components/Loader.vue";
 
 export default {
+  components: {Loader},
   data() {
     return {
-      order: this.$route.params.items,
+      order: [],
+      isLoading: false,
     }
+  },
+  methods: {
+    getOrderInfo() {
+      this.isLoading = true;
+      console.log(this.$route.params.orderId)
+      axios.
+        get(`${API_DEFAULT_URL}api/orders/${this.$route.params.orderId}`, {
+          params: {
+            userAccessKey: this.$store.state.userAccessKey
+          }
+        })
+        .then(res => {
+          this.order = res.data;
+          this.isLoading = false;
+        })
+    }
+  },
+  created() {
+    this.getOrderInfo()
   },
   filters: {numberFormat},
 }
 </script>
+<style scoped>
+  .content {
+    position: relative;
+  }
+
+  .loader {
+    position: relative;
+    top: 50%;
+  }
+</style>
