@@ -28,7 +28,7 @@
       <section class="item" v-if="!productInfoLoading">
         <div class="item__pics pics">
           <div class="pics__wrapper">
-            <img class="main-img" width="570" height="570" :src="productInfo.colors[0].gallery ? productInfo.colors[0].gallery[0].file.url : 'images/no-img.png'" :alt="productInfo.colors[0].gallery ? productInfo.colors[0].gallery[0].file.originalName : 'Изображение отсутствует'">
+            <img class="main-img" width="570" height="570" :src="colors[0].gallery ? colors[0].gallery[0].file.url : 'images/no-img.png'" :alt="colors[0].gallery ? colors[0].gallery[0].file.originalName : 'Изображение отсутствует'">
           </div>
           <ul class="pics__list">
 
@@ -75,12 +75,7 @@
                   <legend class="form__legend">Цвет</legend>
                   <ul class="colors colors--black">
 
-                    <li class="colors__item" v-for="(color, index) in productInfo.colors" :key="color.color.id">
-                      <label class="colors__label">
-                        <input class="colors__radio sr-only" type="radio" name="color-item" :value="color.color.id" v-model="productColor">
-                        <span class="colors__value" :style="{backgroundColor: color.color.code}"></span>
-                      </label>
-                    </li>
+                    <ColorInputProductInfo v-for="color in productInfo.colors" :key="color.color.id" :id="color.color.id" :backgroundColor="color.color.code" @changeCurrentColor="changeCurrentColor" />
 
                   </ul>
                 </fieldset>
@@ -89,7 +84,7 @@
                 <fieldset class="form__block">
                   <legend class="form__legend">Размер</legend>
                   <label class="form__label form__label--small form__label--select">
-                    <select class="form__select" type="text" name="category" v-model="productSize.selected">
+                    <select class="form__select" name="category" v-model="productSize.selected">
                       <option disabled value="">Выберите размер</option>
                       <option :value="size.id" v-for="(size, index) in productSize.options" :key="size.id" :selected="index == 0">{{ size.title }}</option>
                     </select>
@@ -172,9 +167,10 @@ import axios from "axios";
 import {API_DEFAULT_URL} from "@/config";
 import Loader from "@/components/Loader.vue";
 import numberFormat from "@/helpers/numberFormat";
+import ColorInputProductInfo from "@/components/ColorInputProductInfo.vue";
 
 export default {
-  components: {Loader, Header, Footer},
+  components: {ColorInputProductInfo, Loader, Header, Footer},
   data() {
     return {
       productId: this.$route.params.productId,
@@ -188,6 +184,7 @@ export default {
       productInfoLoading: false,
       isAddLoading: false,
       isDeliveryContentVisible: false,
+      colors: []
     }
   },
   methods: {
@@ -225,14 +222,22 @@ export default {
       } else {
         alert('Пожалуйста, выберите цвет товара');
       }
-    }
+    },
+    changeCurrentColor(id) {
+      this.productColor = id;
+
+      this.colors.sort((a, b) => {
+        if (a.color.id === id) return -1;
+        if (b.color.id === id) return 1;
+      })
+    },
   },
   filters: {
     numberFormat
   },
   computed: {
     getAnotherImgs() {
-      return this.productInfo.colors.filter((item, index) => {
+      return this.colors.filter((item, index) => {
         return index !== 0;
       })
     }
@@ -244,6 +249,7 @@ export default {
       get(`${API_DEFAULT_URL}api/products/${this.productId}`)
       .then(res => {
         this.productInfo = res.data;
+        this.colors = res.data.colors;
         this.productInfoLoading = false;
         this.productSize.options = this.productInfo.sizes;
       })

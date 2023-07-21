@@ -57,4 +57,3 @@ export default {
   },
 }
 </script>
-<!-- colors[0].gallery ? colors[0].gallery[0].file.url : 'images/no-img.png'" :alt="colors[0].gallery ? title : 'Изображение товара отсутствует' -->
