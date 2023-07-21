@@ -1,6 +1,6 @@
 <template>
 
-  <div id="app">
+  <div>
 
     <main class="content container">
       <Loader v-if="productInfoLoading"/>
