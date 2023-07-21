@@ -249,7 +249,7 @@ export default {
       get(`${API_DEFAULT_URL}api/products/${this.productId}`)
       .then(res => {
         this.productInfo = res.data;
-        this.colors = res.data.colors;
+        this.colors = [...res.data.colors];
         this.productInfoLoading = false;
         this.productSize.options = this.productInfo.sizes;
       })
